@@ -1,0 +1,20 @@
+# Node Refill
+entities.DawnHelper/nodeRefill.placements.name.oneDash=Node Refill
+entities.DawnHelper/nodeRefill.placements.name.twoDash=Node Refill (Two Dashes)
+entities.DawnHelper/nodeRefill.placements.description.oneDash=A refill that teleports to the next node upon collection.
+entities.DawnHelper/nodeRefill.placements.description.twoDash=A refill that teleports to the next node upon collection.
+entities.DawnHelper/nodeRefill.attributes.description.restart=Whether the refill will return to it's original position upon collecting the last node.
+# SuperDash Bumper
+entities.DawnHelper/superDashBumper.placements.name.DashBumper=Dash Bumper
+entities.DawnHelper/superDashBumper.placements.name.DashBumper(Fast)=Dash Bumper (Fast)
+entities.DawnHelper/superDashBumper.placements.name.SuperDashBumper=SuperDash Bumper
+entities.DawnHelper/superDashBumper.placements.name.SuperDashBumper(Fast)=SuperDash Bumper (Fast)
+entities.DawnHelper/superDashBumper.placements.description.DashBumper=A Bumper that forces a dash upon collision.
+entities.DawnHelper/superDashBumper.placements.description.DashBumper(Fast)=A Bumper that forces a dash upon collision (with speed retention goodiness).
+entities.DawnHelper/superDashBumper.placements.description.SuperDashBumper=A Bumper that forces a Superdash upon collision.
+entities.DawnHelper/superDashBumper.placements.description.SuperDashBumper(Fast)=A Bumper that forces a Superdash upon collision (with speed retention goodiness).
+entities.DawnHelper/superDashBumper.attributes.description.static=Whether the bumper should not wobble (disabling is evil! I will hate you forever if you do this!).
+entities.DawnHelper/superDashBumper.attributes.description.soup=Whether the bumper should force a Superdash (curvable dash) instead of a normal dash. It is recommeded to turn the Superdash variant off with this setting (I could make it work with a ton of IL nonsense but I don't wanna because I'm lazy).
+entities.DawnHelper/superDashBumper.attributes.description.fast=Whether the bumper dash should retain the user's speed.
+entities.DawnHelper/superDashBumper.attributes.description.alwaysBoost=Whether the bumper should always give explosion boosts regardless of the direction held before collision.
+entities.DawnHelper/superDashBumper.attributes.description.verticalDashStretching=Whether vertical bumper dashes should not be locked to standard dash speed (240).
