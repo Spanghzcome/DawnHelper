@@ -74,13 +74,13 @@ public class SuperDashBumper : Bumper
         Get<PlayerCollider>().OnCollide = OnPlayer;
         if (soup)
         {
-            sprite = DawnHelperModule.spriteBank.CreateOn(sprite, "superDashBumper");
+            sprite = GFX.SpriteBank.Create("superDashBumper");
             sprite.Play("idle");
             sprite.CenterOrigin();
         }
         else
         {
-            sprite = DawnHelperModule.spriteBank.CreateOn(sprite, "dashBumper");
+            sprite = GFX.SpriteBank.Create("dashBumper");
             sprite.Play("idle");
             sprite.CenterOrigin();
         }
