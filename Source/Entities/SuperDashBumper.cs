@@ -66,21 +66,14 @@ public class SuperDashBumper : Bumper
         soup = data.Bool("soup");
         timer = data.Float("respawnTimer");
         customSpeed = data.Float("launchDashSpeed");
+
         if (Static)
             Remove(sine);
         Get<PlayerCollider>().OnCollide = OnPlayer;
-        if (soup)
-        {
-            sprite = GFX.SpriteBank.Create("superDashBumper");
-            sprite.Play("idle");
-            sprite.CenterOrigin();
-        }
-        else
-        {
-            sprite = GFX.SpriteBank.Create("dashBumper");
-            sprite.Play("idle");
-            sprite.CenterOrigin();
-        }
+
+        sprite = GFX.SpriteBank.Create(soup ? "superDashBumper" : "dashBumper");
+        sprite.Play("idle");
+        sprite.CenterOrigin();
     }
 
     internal class soupBump : Component
