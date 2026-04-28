@@ -1,11 +1,7 @@
 using System;
-using System.Collections;
-using System.Reflection;
 using Celeste.Mod.Entities;
 using Microsoft.Xna.Framework;
 using Monocle;
-using Celeste;
-
 
 namespace Celeste.Mod.DawnHelper.Entities;
 
@@ -43,7 +39,7 @@ public class SuperDashBumper : Bumper
            SaveData.Instance.Assists.SuperDashing = false;
            soup.bumpHit = false;
        }
-       orig(self); 
+       orig(self);
     }
 
     private static void soupResetMethod(Player player)
@@ -104,23 +100,23 @@ public class SuperDashBumper : Bumper
                 Audio.Play("event:/game/06_reflection/pinballbumper_hit", Position);
             }
             respawnTimer = timer;
-            if (player.demoDashed) 
+            if (player.demoDashed)
                 demo = true;
             Vector2 vector2 = ExplodeDashLaunch(player, Position, snapUp: false, sidesOnly: false);
-            
+
             sprite.Play("hit", restart: true);
             spriteEvil.Play("hit", restart: true);
             light.Visible = false;
             bloom.Visible = false;
             SceneAs<Level>().DirectionalShake(vector2, 0.15f);
             SceneAs<Level>().Displacement.AddBurst(base.Center, 0.3f, 8f, 32f, 0.8f);
-            SceneAs<Level>().Particles.Emit(P_Launch, 12, base.Center + vector2 * 12f, Vector2.One * 3f, 
+            SceneAs<Level>().Particles.Emit(P_Launch, 12, base.Center + vector2 * 12f, Vector2.One * 3f,
                 vector2.Angle());
-             
+
             if (!player.Inventory.NoRefills)
-            { 
+            {
                 player.RefillDash();
-            } 
+            }
         }
     }
 
@@ -129,7 +125,7 @@ public class SuperDashBumper : Bumper
     {
         //Preserves speed because what good entity doesn't? 
         origspeed = player.Speed;
-        
+
         Input.Rumble(RumbleStrength.Strong, RumbleLength.Medium);
         Celeste.Freeze(0.1f);
         player.launchApproachX = null;
@@ -157,9 +153,9 @@ public class SuperDashBumper : Bumper
             fast = player.Speed.Sign() * Vector2.Max(player.Speed.Abs(), origspeed.Abs());
             player.Speed.X = fast.X;
             //In case you wanna mess with vertical dash stretching like a chad
-   
+
         }
-        
+
         if (player.Speed.Y <= 50f)
         {
             player.Speed.Y = Math.Min(-150f, player.Speed.Y);
@@ -180,12 +176,12 @@ public class SuperDashBumper : Bumper
         }
         SlashFx.Burst(player.Center, player.Speed.Angle());
         player.RefillStamina();
-        
+
         player.OverrideDashDirection = vector;
         player.StateMachine.ForceState(2);
         if (spead && verticalStretch)
             Alarm.Set(player, 0.03f, () => player.Speed.Y = fast.Y);
-        
+
         //soup
         if (soup)
         {
@@ -197,9 +193,9 @@ public class SuperDashBumper : Bumper
         Alarm.Set(player, 0.1f, () => player.OverrideDashDirection = null);
         //Preserves crouched state when demo'd into 
         player.Ducking = demo;
-        
+
         return vector;
     }
 
-   
+
 }

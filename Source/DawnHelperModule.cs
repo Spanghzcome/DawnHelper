@@ -1,6 +1,5 @@
 ﻿using System;
 using Celeste.Mod.DawnHelper.Entities;
-using Monocle;
 
 namespace Celeste.Mod.DawnHelper;
 

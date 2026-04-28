@@ -4,7 +4,6 @@ using Celeste.Mod.Entities;
 using Microsoft.Xna.Framework;
 using Monocle;
 using MonoMod;
-using Celeste;
 
 namespace Celeste.Mod.DawnHelper.Entities;
 
