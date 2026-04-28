@@ -30,6 +30,7 @@ public class SuperDashBumper : Bumper
     {
         On.Celeste.Player.DashEnd -= modPlayerDashEnd;
         Everest.Events.Player.OnDie -= soupResetMethod;
+        Everest.Events.Player.OnRegisterStates -= playerSoup;
     }
 
     private static void modPlayerDashEnd(On.Celeste.Player.orig_DashEnd orig, Player self)
