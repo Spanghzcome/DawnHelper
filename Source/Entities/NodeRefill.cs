@@ -21,9 +21,9 @@ public class NodeRefill : Refill
     private static Color COLOR_TWODASH;
     private static Color COLOR_ONEDASH;
     private Color LineColor => twoDashes ? COLOR_TWODASH : COLOR_ONEDASH;
-    
+
     public NodeRefill(EntityData data, Vector2 offset)
-    : base(data, offset)
+        : base(data, offset)
     {
         restart = data.Bool("restart");
         COLOR_ONEDASH = Calc.HexToColorWithAlpha(data.Attr("OneDashLineColor"));
@@ -35,7 +35,7 @@ public class NodeRefill : Refill
         Get<PlayerCollider>().OnCollide = OnPlayer;
         startPosition = data.Position + offset;
     }
-        
+
     [MonoModLinkTo("Monocle.Entity", "System.Void Update()")]
     public void base_Update()
     {
@@ -58,7 +58,7 @@ public class NodeRefill : Refill
             if (index == 0)
                 level.ParticlesFG.Emit(p_glow, 1, Position, Vector2.One * 5f);
             else
-                level.ParticlesFG.Emit(p_glow, 1, nodes[index - 1], Vector2.One * 5f); 
+                level.ParticlesFG.Emit(p_glow, 1, nodes[index - 1], Vector2.One * 5f);
         }
         UpdateY();
         FixY();
@@ -84,10 +84,10 @@ public class NodeRefill : Refill
             if (index == 0)
                 level.ParticlesFG.Emit(p_regen, 16, Position, Vector2.One * 2f);
             else
-                level.ParticlesFG.Emit(p_regen, 16, nodes[index - 1], Vector2.One * 2f); 
+                level.ParticlesFG.Emit(p_regen, 16, nodes[index - 1], Vector2.One * 2f);
         }
     }
-    
+
     public void FixY()
     {
         sprite.Position = Collider.Position + Vector2.One * 8;
@@ -95,7 +95,7 @@ public class NodeRefill : Refill
         bloom.Position = Collider.Position + Vector2.One * 8;
         light.Position = Collider.Position + Vector2.One * 8;
     }
-    
+
     public override void Render()
     {
         base.Render();
@@ -113,6 +113,7 @@ public class NodeRefill : Refill
                 Draw.Line(nodes[outlineIndex], nodes[outlineIndex + 1], LineColor);
         }
     }
+
     private IEnumerator CustomRefillRoutine(Player player)
     {
         Celeste.Freeze(0.05f);
@@ -131,36 +132,37 @@ public class NodeRefill : Refill
         else
         {
             level.ParticlesFG.Emit(p_shatter, 5, nodes[index - 1], Vector2.One * 4f, num - MathF.PI / 2f);
-            level.ParticlesFG.Emit(p_shatter, 5, nodes[index - 1], Vector2.One * 4f, num + MathF.PI / 2f); 
-            SlashFx.Burst(nodes[index-1], num);
+            level.ParticlesFG.Emit(p_shatter, 5, nodes[index - 1], Vector2.One * 4f, num + MathF.PI / 2f);
+            SlashFx.Burst(nodes[index - 1], num);
         }
     }
+
     private new void OnPlayer(Player player)
     {
-            if (player.UseRefill(twoDashes))
+        if (player.UseRefill(twoDashes))
+        {
+            Audio.Play(
+                twoDashes
+                    ? "event:/new_content/game/10_farewell/pinkdiamond_touch"
+                    : "event:/game/general/diamond_touch", this.Position);
+            Input.Rumble(RumbleStrength.Medium, RumbleLength.Medium);
+            this.Collidable = false;
+            base.Add(new Monocle.Coroutine(CustomRefillRoutine(player), true));
+            this.respawnTimer = respawnTime;
+            if (index < nodes.Length)
             {
-                Audio.Play(
-                    twoDashes
-                        ? "event:/new_content/game/10_farewell/pinkdiamond_touch"
-                        : "event:/game/general/diamond_touch", this.Position);
-                Input.Rumble(RumbleStrength.Medium, RumbleLength.Medium);
-                this.Collidable = false;
-                base.Add(new Monocle.Coroutine(CustomRefillRoutine(player), true));
-                this.respawnTimer = respawnTime;
-                if (index < nodes.Length)
-                {
-                    Collider.Position = nodes[index] - Position - Vector2.One * 8;
-                    ++index;
-                    level.ParticlesFG.Emit(p_glow, 1, nodes[index - 1], Vector2.One * 5f);
-                }
-                else if (restart)
-                {
-                    Collider.CenterOrigin();
-                    
-                    index = 0;
-                }
-                else
-                    RemoveSelf();
+                Collider.Position = nodes[index] - Position - Vector2.One * 8;
+                ++index;
+                level.ParticlesFG.Emit(p_glow, 1, nodes[index - 1], Vector2.One * 5f);
             }
+            else if (restart)
+            {
+                Collider.CenterOrigin();
+
+                index = 0;
+            }
+            else
+                RemoveSelf();
         }
     }
+}

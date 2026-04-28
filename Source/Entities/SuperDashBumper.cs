@@ -29,17 +29,17 @@ public class SuperDashBumper : Bumper
     public static void Unload()
     {
         On.Celeste.Player.DashEnd -= modPlayerDashEnd;
-        Everest.Events.Player.OnDie  -= soupResetMethod;
+        Everest.Events.Player.OnDie -= soupResetMethod;
     }
 
     private static void modPlayerDashEnd(On.Celeste.Player.orig_DashEnd orig, Player self)
     {
-       if (self.Get<soupBump>() is soupBump soup && soup.bumpHit)
-       {
-           SaveData.Instance.Assists.SuperDashing = false;
-           soup.bumpHit = false;
-       }
-       orig(self);
+        if (self.Get<soupBump>() is soupBump soup && soup.bumpHit)
+        {
+            SaveData.Instance.Assists.SuperDashing = false;
+            soup.bumpHit = false;
+        }
+        orig(self);
     }
 
     private static void soupResetMethod(Player player)
@@ -53,8 +53,8 @@ public class SuperDashBumper : Bumper
 
     private static void playerSoup(Player player)
     {
-        player.Add(new soupBump ());
-}
+        player.Add(new soupBump());
+    }
 
     public SuperDashBumper(EntityData data, Vector2 offset) : base(data, offset)
     {
@@ -87,6 +87,7 @@ public class SuperDashBumper : Bumper
         public bool bumpHit;
         public soupBump() : base(false, false) { }
     }
+
     private new void OnPlayer(Player player)
     {
         if (respawnTimer <= 0f)
@@ -153,7 +154,6 @@ public class SuperDashBumper : Bumper
             fast = player.Speed.Sign() * Vector2.Max(player.Speed.Abs(), origspeed.Abs());
             player.Speed.X = fast.X;
             //In case you wanna mess with vertical dash stretching like a chad
-
         }
 
         if (player.Speed.Y <= 50f)
@@ -196,6 +196,4 @@ public class SuperDashBumper : Bumper
 
         return vector;
     }
-
-
 }
