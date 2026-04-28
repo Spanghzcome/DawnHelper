@@ -82,37 +82,34 @@ public class SuperDashBumper : Bumper
         public soupBump() : base(false, false) { }
     }
 
+    // mostly copied from vanilla's Bumper.OnPlayer
     private new void OnPlayer(Player player)
     {
-        if (respawnTimer <= 0f)
-        {
-            if ((base.Scene as Level).Session.Area.ID == 9)
-            {
-                Audio.Play("event:/game/09_core/pinballbumper_hit", Position);
-            }
-            else
-            {
-                Audio.Play("event:/game/06_reflection/pinballbumper_hit", Position);
-            }
-            respawnTimer = timer;
-            if (player.demoDashed)
-                demo = true;
-            Vector2 vector2 = ExplodeDashLaunch(player, Position, snapUp: false, sidesOnly: false);
+        if (Scene is not Level level)
+            // sanity check: make sure we're in a level and put it in a "level" variable
+            return;
 
-            sprite.Play("hit", restart: true);
-            spriteEvil.Play("hit", restart: true);
-            light.Visible = false;
-            bloom.Visible = false;
-            SceneAs<Level>().DirectionalShake(vector2, 0.15f);
-            SceneAs<Level>().Displacement.AddBurst(base.Center, 0.3f, 8f, 32f, 0.8f);
-            SceneAs<Level>().Particles.Emit(P_Launch, 12, base.Center + vector2 * 12f, Vector2.One * 3f,
-                vector2.Angle());
+        if (respawnTimer > 0f)
+            // the bumper isn't collidable yet
+            return;
 
-            if (!player.Inventory.NoRefills)
-            {
-                player.RefillDash();
-            }
-        }
+        Audio.Play(SFX.game_06_pinballbumper_hit, Position);
+
+        respawnTimer = timer;
+        if (player.demoDashed)
+            demo = true;
+        Vector2 vector2 = ExplodeDashLaunch(player, Position, snapUp: false, sidesOnly: false);
+
+        sprite.Play("hit", restart: true);
+        light.Visible = false;
+        bloom.Visible = false;
+
+        level.DirectionalShake(vector2, 0.15f);
+        level.Displacement.AddBurst(Center, 0.3f, 8f, 32f, 0.8f);
+        level.Particles.Emit(P_Launch, 12, Center + vector2 * 12f, Vector2.One * 3f, vector2.Angle());
+
+        if (!player.Inventory.NoRefills)
+            player.RefillDash();
     }
 
 
