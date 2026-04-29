@@ -1,11 +1,9 @@
 ﻿using System;
 using Celeste.Mod.DawnHelper.Entities;
-using Monocle;
 
 namespace Celeste.Mod.DawnHelper;
 
 public class DawnHelperModule : EverestModule {
-    public static SpriteBank spriteBank;
     public static DawnHelperModule Instance { get; private set; }
 
     public override Type SettingsType => typeof(DawnHelperModuleSettings);
@@ -39,6 +37,5 @@ public class DawnHelperModule : EverestModule {
     public override void LoadContent(bool firstLoad)
     {
         base.LoadContent(firstLoad);
-        spriteBank = new SpriteBank(GFX.Game, "Graphics/Sprites.xml");
     }
 }
