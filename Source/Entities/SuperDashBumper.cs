@@ -209,4 +209,11 @@ public class SuperDashBumper : Bumper
 
         return vector;
     }
+    
+    public override void Update()
+    {
+        base.Update();
+        if (Static)
+            Position = anchor;
+    }
 }

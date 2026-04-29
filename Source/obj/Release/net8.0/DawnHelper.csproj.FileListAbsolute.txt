@@ -1,0 +1,13 @@
+/home/nathanc/.local/share/Steam/steamapps/common/Celeste/Mods/DawnHelper/Source/bin/Release/net8.0/DawnHelper.deps.json
+/home/nathanc/.local/share/Steam/steamapps/common/Celeste/Mods/DawnHelper/Source/bin/Release/net8.0/DawnHelper.dll
+/home/nathanc/.local/share/Steam/steamapps/common/Celeste/Mods/DawnHelper/Source/bin/Release/net8.0/DawnHelper.pdb
+/home/nathanc/.local/share/Steam/steamapps/common/Celeste/Mods/DawnHelper/Source/obj/Release/net8.0/DawnHelper.csproj.AssemblyReference.cache
+/home/nathanc/.local/share/Steam/steamapps/common/Celeste/Mods/DawnHelper/Source/obj/Release/net8.0/DawnHelper.GeneratedMSBuildEditorConfig.editorconfig
+/home/nathanc/.local/share/Steam/steamapps/common/Celeste/Mods/DawnHelper/Source/obj/Release/net8.0/DawnHelper.AssemblyInfoInputs.cache
+/home/nathanc/.local/share/Steam/steamapps/common/Celeste/Mods/DawnHelper/Source/obj/Release/net8.0/DawnHelper.AssemblyInfo.cs
+/home/nathanc/.local/share/Steam/steamapps/common/Celeste/Mods/DawnHelper/Source/obj/Release/net8.0/DawnHelper.csproj.CoreCompileInputs.cache
+/home/nathanc/.local/share/Steam/steamapps/common/Celeste/Mods/DawnHelper/Source/obj/Release/net8.0/DawnHelper.sourcelink.json
+/home/nathanc/.local/share/Steam/steamapps/common/Celeste/Mods/DawnHelper/Source/obj/Release/net8.0/DawnHelper.dll
+/home/nathanc/.local/share/Steam/steamapps/common/Celeste/Mods/DawnHelper/Source/obj/Release/net8.0/refint/DawnHelper.dll
+/home/nathanc/.local/share/Steam/steamapps/common/Celeste/Mods/DawnHelper/Source/obj/Release/net8.0/DawnHelper.pdb
+/home/nathanc/.local/share/Steam/steamapps/common/Celeste/Mods/DawnHelper/Source/obj/Release/net8.0/ref/DawnHelper.dll
