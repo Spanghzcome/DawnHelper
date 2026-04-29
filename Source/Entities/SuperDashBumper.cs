@@ -71,6 +71,9 @@ public class SuperDashBumper : Bumper
             Remove(sine);
         Get<PlayerCollider>().OnCollide = OnPlayer;
 
+        // don't react to core changes; never appear to be a hazard
+        Remove(Get<CoreModeListener>());
+
         sprite = GFX.SpriteBank.Create(soup ? "superDashBumper" : "dashBumper");
         sprite.Play("idle");
         sprite.CenterOrigin();
@@ -80,6 +83,15 @@ public class SuperDashBumper : Bumper
     {
         public bool bumpHit;
         public soupBump() : base(false, false) { }
+    }
+
+    public override void Added(Scene scene)
+    {
+        base.Added(scene);
+        // we want the bumper to never appear like a hazard
+        fireMode = false;
+        spriteEvil.Visible = false;
+        sprite.Visible = true;
     }
 
     // mostly copied from vanilla's Bumper.OnPlayer
