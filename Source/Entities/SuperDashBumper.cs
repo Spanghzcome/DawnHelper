@@ -74,7 +74,8 @@ public class SuperDashBumper : Bumper
         // don't react to core changes; never appear to be a hazard
         Remove(Get<CoreModeListener>());
 
-        sprite = GFX.SpriteBank.Create(soup ? "superDashBumper" : "dashBumper");
+        // CreateOn modifies the sprite parameter in-place
+        GFX.SpriteBank.CreateOn(sprite, soup ? "superDashBumper" : "dashBumper");
         sprite.Play("idle");
         sprite.CenterOrigin();
     }
