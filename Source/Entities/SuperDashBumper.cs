@@ -16,6 +16,8 @@ public class SuperDashBumper : Bumper
     public bool spead;
     public bool alwaysBoost;
     public bool verticalStretch;
+    public bool noRefill;
+    public bool consumeDash;
     private Vector2 fast;
     private Vector2 origspeed;
 
@@ -66,6 +68,8 @@ public class SuperDashBumper : Bumper
 
     public SuperDashBumper(EntityData data, Vector2 offset) : base(data, offset)
     {
+        consumeDash = data.Bool("consumeDash");
+        noRefill = data.Bool("noRefill");
         verticalStretch = data.Bool("verticalDashStretching");
         Static = data.Bool("static");
         spead = data.Bool("fast");
@@ -128,8 +132,12 @@ public class SuperDashBumper : Bumper
         level.Displacement.AddBurst(Center, 0.3f, 8f, 32f, 0.8f);
         level.Particles.Emit(P_Launch, 12, Center + vector2 * 12f, Vector2.One * 3f, vector2.Angle());
 
-        if (!player.Inventory.NoRefills)
+        if (!player.Inventory.NoRefills || !noRefill || !consumeDash)
             player.RefillDash();
+        if (consumeDash)
+        {
+            player.Dashes = 0;
+        }
     }
 
     // also mostly copied from Player.ExplodeLaunch

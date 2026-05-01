@@ -15,6 +15,8 @@ SuperDashBumper.placements = {
             alwaysBoost = false,
             fast = false,
             respawnTimer = 0.6,
+            consumeDash = false,
+            noRefill = false,
             launchDashSpeed = 280
         }
     },
@@ -27,6 +29,8 @@ SuperDashBumper.placements = {
             alwaysBoost = false,
             fast = true,
             respawnTimer = 0.6,
+            consumeDash = false,
+            noRefill = false,
             launchDashSpeed = 280
         }
     },
@@ -34,11 +38,14 @@ SuperDashBumper.placements = {
         name = "SuperDashBumper",
         data = {
             verticalDashStretching = false,
+
             static = true,
             soup = true,
             alwaysBoost = false,
             fast = false,
             respawnTimer = 0.6,
+            consumeDash = false,
+            noRefill = false,
             launchDashSpeed = 280
         }
     },
@@ -51,6 +58,8 @@ SuperDashBumper.placements = {
             alwaysBoost = false,
             fast = true,
             respawnTimer = 0.6,
+            consumeDash = false,
+            noRefill = false,
             launchDashSpeed = 280
         }
     }
