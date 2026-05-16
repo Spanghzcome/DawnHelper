@@ -18,3 +18,9 @@ entities.DawnHelper/superDashBumper.attributes.description.soup=Whether the bump
 entities.DawnHelper/superDashBumper.attributes.description.fast=Whether the bumper dash should retain the user's speed.
 entities.DawnHelper/superDashBumper.attributes.description.alwaysBoost=Whether the bumper should always give explosion boosts regardless of the direction held before collision.
 entities.DawnHelper/superDashBumper.attributes.description.verticalDashStretching=Whether vertical bumper dashes should not be locked to standard dash speed (240).
+# Coyote Block
+entities.DawnHelper/coyoteBlock.placements.name.coyote_block=Coyote Block
+entities.DawnHelper/coyoteBlock.placements.description.coyote_block=A Dash Block that gives coyote frames upon being dashed into. Has funny speed mode that preserveres speed upon performing a hyper/super.
+entities.DawnHelper/coyoteBlock.attributes.description.coyoteTimeAfterDash=The amount of coyote frames the player gets if they had more than one dash upon super jumping or if the "Coyote Only When Dashing" toggle is enabled.
+entities.DawnHelper/coyoteBlock.attributes.description.fast=If hypers/supers from the coyote frames will preserve the player's pre-hit speed.
+entities.DawnHelper/coyoteBlock.attributes.description.coyoteOnlyWhenDashing=Whether the player can only coyote jump while dashing. Basically forces hypers/supers.
