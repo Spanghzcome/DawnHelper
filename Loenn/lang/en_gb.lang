@@ -24,3 +24,7 @@ entities.DawnHelper/coyoteBlock.placements.description.coyote_block=A Dash Block
 entities.DawnHelper/coyoteBlock.attributes.description.coyoteTimeAfterDash=The amount of coyote frames the player gets if they had more than one dash upon super jumping or if the "Coyote Only When Dashing" toggle is enabled.
 entities.DawnHelper/coyoteBlock.attributes.description.fast=If hypers/supers from the coyote frames will preserve the player's pre-hit speed.
 entities.DawnHelper/coyoteBlock.attributes.description.coyoteOnlyWhenDashing=Whether the player can only coyote jump while dashing. Basically forces hypers/supers.
+# AlwaysBoostingController
+entities.DawnHelper/alwaysBoostingController.placements.name.AlwaysBoostingController=Always Boosting Controller
+entities.DawnHelper/alwaysBoostingController.placements.description.AlwaysBoostingController=Makes the player constantly boost as if they had just left a booster.
+entities.DawnHelper/alwaysBoostingController.attributes.safeRespawn=Prevents the player from boosting immediately after spawning.
