@@ -28,3 +28,16 @@ entities.DawnHelper/coyoteBlock.attributes.description.coyoteOnlyWhenDashing=Whe
 entities.DawnHelper/alwaysBoostingController.placements.name.AlwaysBoostingController=Always Boosting Controller
 entities.DawnHelper/alwaysBoostingController.placements.description.AlwaysBoostingController=Makes the player constantly boost as if they had just left a booster.
 entities.DawnHelper/alwaysBoostingController.attributes.safeRespawn=Prevents the player from boosting immediately after spawning.
+# Blap Swock
+entities.DawnHelper/blapSwock.placements.name.BlapSwock=Blap Swock
+entities.DawnHelper/blapSwock.placements.description.BlapSwock=An inverse swap block that swaps (or moves) the player towards a specifiied node upon dashing inside of the Blap Swock's radius.\nAllows for some cursed movement tech (such as horizontal wallbounces) and also has a speed retention toggle.
+entites.DawnHelper/blapSwock.attributes.description.retainDashDirection=Allows the player to be in any dash direction state while being swapped no matter the direction.\n(For example, dashing up and getting swapped horizontally will still allow you to wallbounce).
+entities.DawnHelper/blapSwock.attributes.description.dashDirectionSpeedRetention=Retained speed will always move towards the node.
+entites.DawnHelper/blapSwock.attributes.description.speedRetention=Exactly what it sounds like.
+# Versatile Spring
+entities.DawnHelper/versatileSpring.placements.name.spring=Versatile Spring
+entities.DawnHelper/versatileSpring.placements.name.momentum=Versatile Spring (Momentum)
+entities.DawnHelper/versatileSpring.placements.description.spring=An improved spring that allows you to configure how it collides with the player and, most notably, holdables. Allows holdables to be hit by the spring from behind just like the player.\nAlso comes with a momentum varient that also works on holdables.
+entities.DawnHelper/versatileSpring.placements.description.momentum=An improved spring that allows you to configure how it collides with the player and, most notably, holdables. Notably, allows holdables to be hit by the spring in the same direction as the orientation of the spring, just like the player.\nAlso comes with a momentum variant that also works on holdables, amoung other cursed bullshit.
+entities.DawnHelper/versatileSpring.attributes.description.toggleFlag=Whether the flag should be toggled on hit instead of activating only once.
+entities.DawnHelper/versatileSpring.attributes.description.invertedVerticalMomentum=Inverses the vertical momentum provided by left and right facing springs. Intended for use with Flag On Hit set to "GravityHelper_PlayerInverted" (which makes the spring function like a gravity spring) but works without it.
