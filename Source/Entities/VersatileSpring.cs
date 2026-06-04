@@ -435,6 +435,9 @@ public class VersatileSpring : Spring
                     speed.Y = -160f;
                     holdable.gravityTimer = 0.15f;
                     
+                    if (holdable.Entity is Glider DCgliderF)
+                        DCgliderF.wiggler.Start();
+                    
                     if (holdable.Entity is Actor actorF)
                         actorF.MoveV(Top - actorF.Bottom);
                 }
@@ -444,7 +447,14 @@ public class VersatileSpring : Spring
             case Orientations.WallLeft:
                 if (speed.X > 0f)
                 {
-                    speed.X = 220f;
+                    if (holdable.Entity is Glider DCgliderL)
+                    {
+                        speed.X = 160f;
+                        DCgliderL.wiggler.Start();
+                    }
+                    else
+                        speed.X = 220f;
+                    
                     speed.Y = -80f;
                     holdable.gravityTimer = 0.1f;
                     
@@ -460,8 +470,14 @@ public class VersatileSpring : Spring
             case Orientations.WallRight:
                 if (speed.X < 0f)
                 {
+                    if (holdable.Entity is Glider DCgliderR)
+                    {
+                        speed.X = -160f;
+                        DCgliderR.wiggler.Start();
+                    }
+                    else
+                        speed.X = 220f;
                     
-                    speed.X = -220f;
                     speed.Y = -80f;
                     holdable.gravityTimer = 0.1f;
                     
@@ -480,6 +496,9 @@ public class VersatileSpring : Spring
                     speed.X *= 0.5f;
                     speed.Y = 160f;
                     holdable.gravityTimer = 0.15f;
+                    
+                    if (holdable.Entity is Glider DCgliderC)
+                        DCgliderC.wiggler.Start();
                     
                     if (holdable.Entity is Actor actorC)
                         actorC.MoveV(Bottom - actorC.Top);
