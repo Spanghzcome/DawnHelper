@@ -35,6 +35,7 @@ public class BlapSwock : Entity
     private bool dashDirectionSpeedRetention;
     private bool fun;
     private bool spead;
+    private bool dashedInside2;
     
     public static void Load()
     {
@@ -96,6 +97,8 @@ public class BlapSwock : Entity
     internal class DashInsideCheck : Component
     {
         public bool dashedInside;
+        internal Entity parent;
+
         public DashInsideCheck() : base(false, false) {}
     }
 
@@ -125,6 +128,7 @@ public class BlapSwock : Entity
                 
                 player.Speed = 360f * vector;
                 check.dashedInside = true;
+                dashedInside2 = true;
                 if (spead)
                 {
                     origSpeed = origSpeed.Length() * vector;
@@ -206,7 +210,7 @@ public class BlapSwock : Entity
             Draw.Line(player.Center + Vector2.UnitY * 5, target + Vector2.UnitY * 5, Color.White * scale, 2);
         }
         
-        if (player.StateMachine.State == Player.StDash && player.Get<DashInsideCheck>().dashedInside)
+        if (player.StateMachine.State == Player.StDash && dashedInside2)
         {
             Draw.Line(player.Center - Vector2.UnitY * 5, target - Vector2.UnitY * 5, Color.Red * scale, 2);
             Draw.Line(player.Center + Vector2.UnitY * 5, target + Vector2.UnitY * 5, Color.Red * scale, 2);
@@ -216,7 +220,6 @@ public class BlapSwock : Entity
         else
         {
             targetSprite.Color = Color.White * scale;
-            player.Get<DashInsideCheck>().dashedInside = false;
         }
     }
 
@@ -281,12 +284,12 @@ public class BlapSwock : Entity
             }
         }
 
-        if (player.StateMachine.State == Player.StDash && player.Get<DashInsideCheck>().dashedInside)
+        if (player.StateMachine.State == Player.StDash && dashedInside2)
         {
             sprite.Play("blapping");
         }
         
-        else if (CollideCheck(player) && !player.Get<DashInsideCheck>().dashedInside && sprite.CurrentAnimationID == "idle")
+        else if (CollideCheck(player) && !dashedInside2 && sprite.CurrentAnimationID == "idle")
         {
             sprite.Play("noticed");
             Audio.Play("event:/game/06_reflection/pinballbumper_reset", Position);
@@ -299,6 +302,8 @@ public class BlapSwock : Entity
             Audio.Play("event:/game/05_mirror_temple/swapblock_move_end", player.Center);
             Audio.Stop(loop);
             Remove(thing);
+            player.Get<DashInsideCheck>().dashedInside = false;
+            dashedInside2 = false;
         }
         
         else if (sprite.CurrentAnimationID == "alerted" && !CollideCheck(player))
