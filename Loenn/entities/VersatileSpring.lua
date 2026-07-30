@@ -39,7 +39,9 @@ VersatileSpring.placements = {
             flagOnHit = "",
             toggleFlag = true,
             invertedVerticalMomentum = false,
-            drawOutline = true
+            drawOutline = true,
+            refillStamina = true,
+            refillAmount = -1
         }
     },
     {
@@ -55,7 +57,9 @@ VersatileSpring.placements = {
             flagOnHit = "",
             toggleFlag = true,
             invertedVerticalMomentum = false,
-            drawOutline = true
+            drawOutline = true,
+            refillStamina = true,
+            refillAmount = -1
         }
     }
 }
