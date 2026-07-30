@@ -1,5 +1,6 @@
 using System;
 using Celeste.Mod.Entities;
+using Celeste.Pico8;
 using Microsoft.Xna.Framework;
 using Mono.Cecil.Cil;
 using Monocle;
@@ -41,7 +42,6 @@ public class CoyoteBlock : Solid
     private float cooldown;
     private float respawnTime;
     private float timer;
-    private float timer2;
     private string soundString;
     private string flagThingy;
     private OnHitType onHit;
@@ -93,6 +93,7 @@ public class CoyoteBlock : Solid
         public bool hasCoyoteBlockFrames;
         public float origSpeed;
         public bool midAirJump;
+        public float timer2;
 
 
         public CoyoteCheck() : base(false, false) {}
@@ -134,7 +135,8 @@ public class CoyoteBlock : Solid
         if (!coyoteOnlyWhenDashing)
             player.jumpGraceTimer = coyoteTime;
 
-        player.Dashes = dashRefill;
+        if (dashRefill > 0)
+            player.Dashes = dashRefill;
         
         if (staminaRefill)
             player.RefillStamina();
@@ -144,7 +146,7 @@ public class CoyoteBlock : Solid
         if (speadlmao) //I love speed preservation
             player.Get<CoyoteCheck>().origSpeed = Math.Abs(player.Speed.X);
         
-        timer2 = coyoteTime; //Timer to determine how much time the player should have coyote frames 
+        player.Get<CoyoteCheck>().timer2 = coyoteTime; //Timer to determine how much time the player should have coyote frames 
         
         player.Get<CoyoteCheck>().hasCoyoteBlockFrames = true; //If the player has coyote frames from the block
         
@@ -154,7 +156,8 @@ public class CoyoteBlock : Solid
         if (!string.IsNullOrEmpty(flagThingy))
             level.Session.SetFlag(flagThingy);
         
-        Audio.Play(soundString, Position);
+        if (playSound)
+            Audio.Play(soundString, Position);
         
         switch(reboundType)
         {
@@ -172,12 +175,10 @@ public class CoyoteBlock : Solid
     private void Break(Vector2 from, Vector2 direction)
     {
         Level level = SceneAs<Level>();
-        if (playSound)
-            Audio.Play(soundString, Position);
         
-        for (int i = 0; (float)i < Width / 8f; i++)
+        for (int i = 0; i < Width / 8f; i++)
         {
-            for (int j = 0; (float)j < Height / 8f; j++)
+            for (int j = 0; j < Height / 8f; j++)
             {
                 Scene.Add(Engine.Pooler.Create<Debris>().Init(Position + new Vector2(4 + i * 8, 4 + j * 8), tileType, playDebrisSound).BlastFrom(from));
             }
@@ -221,23 +222,24 @@ public class CoyoteBlock : Solid
         base.Update();
         
         if (Scene?.Tracker.GetEntity<Player>() is not { } player) return;
+        if (player.Get<CoyoteCheck>() is not { } coyoteCheck) return;
         
-        if (player.Get<CoyoteCheck>().hasCoyoteBlockFrames)
+        if (coyoteCheck.hasCoyoteBlockFrames)
         {
-            if (timer2 > 0f)
+            if (coyoteCheck.timer2 > 0f)
             {
-                timer2 -= Engine.DeltaTime;
-                if (player.StateMachine.State == Player.StDash && coyoteOnlyWhenDashing || player.Get<CoyoteCheck>().midAirJump) //Checks if the player did a midair super jump so that timer2 gets reset
+                coyoteCheck.timer2 -= Engine.DeltaTime;
+                if (player.StateMachine.State == Player.StDash && coyoteOnlyWhenDashing || coyoteCheck.midAirJump) //Checks if the player did a midair super jump so that timer2 gets reset
                 {
-                    timer2 = coyoteTime2;
+                    coyoteCheck.timer2 = coyoteTime2;
                     player.jumpGraceTimer = coyoteTime2;
-                    player.Get<CoyoteCheck>().midAirJump = false;
+                    coyoteCheck.midAirJump = false;
                 }
 
-                if (timer2 <= 0f)
+                if (coyoteCheck.timer2 <= 0f)
                 {
-                    player.Get<CoyoteCheck>().hasCoyoteBlockFrames = false; //Disable hook
-                    player.Get<CoyoteCheck>().origSpeed = 0;
+                    coyoteCheck.hasCoyoteBlockFrames = false; //Disable hook
+                    coyoteCheck.origSpeed = 0;
                 }
             }
         }

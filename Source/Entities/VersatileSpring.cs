@@ -19,8 +19,11 @@ public class VersatileSpring : Spring
     private readonly bool _holdablesCanUse;
     private readonly bool _flagToggle;
     private readonly bool _drawOutline;
+    private readonly bool refillStamina;
     private bool flagTrue;
     private bool _invertedVerticalMomentum;
+    private readonly bool _refillStamina;
+    private readonly int _refillAmount;
     private readonly string _flagOnHit;
     private readonly BehindCollision _behindCollision;
     private readonly MomentumType _momentum;
@@ -37,7 +40,9 @@ public class VersatileSpring : Spring
         data.Attr("flagOnHit"),
         data.Bool("toggleFlag"),
         data.Bool("invertedVerticalMomentum"),
-        data.Bool("drawOutline"))
+        data.Bool("drawOutline"),
+        data.Bool("refillStamina"),
+        data.Int("refillAmount"))
     { }
     
     public static Entity LoadCeiling(Level level, LevelData levelData, Vector2 offset, EntityData entityData)
@@ -54,10 +59,12 @@ public class VersatileSpring : Spring
             entityData.Attr("flagOnHit"),
             entityData.Bool("toggleFlag"),
             entityData.Bool("invertedVerticalMomentum"),
-            entityData.Bool("drawOutline"));
+            entityData.Bool("drawOutline"),
+            entityData.Bool("refillStamina"),
+            entityData.Int("refillAmount"));
     }
 
-    public VersatileSpring(Vector2 position, string spritePath, Orientations orientation, bool playerCanUse, bool holdablesCanUse, bool cursed, MomentumType momentum, BehindCollision behindCollision, string flagOnHit, bool flagToggle, bool invertedverticalMomentum, bool drawOutline) : base(
+    public VersatileSpring(Vector2 position, string spritePath, Orientations orientation, bool playerCanUse, bool holdablesCanUse, bool cursed, MomentumType momentum, BehindCollision behindCollision, string flagOnHit, bool flagToggle, bool invertedverticalMomentum, bool drawOutline, bool refillStamina, int refillAmount) : base(
         position, (Spring.Orientations)((int)orientation % 3), playerCanUse)
     {
         _drawOutline = drawOutline;
@@ -68,6 +75,8 @@ public class VersatileSpring : Spring
         _behindCollision = behindCollision;
         _momentum = momentum;
         _cursed = cursed;
+        _refillStamina = refillStamina;
+        _refillAmount = refillAmount;
         
         if (string.IsNullOrWhiteSpace(spritePath))
         {
@@ -154,7 +163,7 @@ public class VersatileSpring : Spring
                 
                 player.Speed.X = 0;
                 player.Speed.Y = 0;
-                player.SuperBounce(inverted ? Bottom : Top);
+                CustomSuperBounce(inverted ? Bottom : Top, player);
 
                 if (_momentum is MomentumType.Both or MomentumType.PlayerOnly)
                 {
@@ -177,7 +186,7 @@ public class VersatileSpring : Spring
                 
                 player.Speed.X = 0;
                 player.Speed.Y = 0;
-                player.SideBounce(1, CenterRight.X, CenterRight.Y);
+                CustomSideBounce(1, CenterRight.X, CenterRight.Y, player);
 
                 if (_momentum is MomentumType.Both or MomentumType.PlayerOnly)
                 {
@@ -192,7 +201,7 @@ public class VersatileSpring : Spring
                 
                 player.Speed.X = 0;
                 player.Speed.Y = 0;
-                player.SideBounce(-1, CenterLeft.X, CenterLeft.Y);
+                CustomSideBounce(-1, CenterLeft.X, CenterLeft.Y, player);
 
                 if (_momentum is MomentumType.Both or MomentumType.PlayerOnly)
                 {
@@ -208,7 +217,7 @@ public class VersatileSpring : Spring
                 player.Speed.X = 0;
                 player.Speed.Y = 0;
                 if (_cursed)
-                    player.SuperBounce(Bottom);
+                    CustomSuperBounce(Bottom, player);
                 else
                     SuperCeilingBounce(player, inverted ? Top : Bottom);
 
@@ -363,7 +372,26 @@ public class VersatileSpring : Spring
         holdable.SetSpeed(speed);
     }
 
-    public void SuperCeilingBounce(Player player, float fromY)
+    private void RefillThingy(Player player)
+    {
+        if (!player.Inventory.NoRefills)
+        {
+            if (_refillAmount >= 0 && player.Dashes < player.MaxDashes)
+            {
+                int overflow = player.Dashes + _refillAmount;
+                if (overflow <= player.MaxDashes)
+                    player.Dashes += _refillAmount;
+                else
+                    player.Dashes = player.MaxDashes;
+            }
+            else
+                player.RefillDash();
+        }
+        if(_refillStamina)
+            player.RefillStamina();
+    }
+
+    private void SuperCeilingBounce(Player player, float fromY)
     {
         if (player.StateMachine.State == 4 && player.CurrentBooster != null)
         {
@@ -373,11 +401,7 @@ public class VersatileSpring : Spring
         Collider collider = player.Collider;
         player.Collider = player.normalHitbox;
         player.MoveV(GravityHelperInterop.IsPlayerInverted() ? (player.Bottom - fromY) : (fromY - player.Top));
-        if (!player.Inventory.NoRefills)
-        {
-            player.RefillDash();
-        }
-        player.RefillStamina();
+        RefillThingy(player);
         player.StateMachine.State = 0;
         player.jumpGraceTimer = 0f;
         player.varJumpTimer = 0f;
@@ -396,6 +420,75 @@ public class VersatileSpring : Spring
         player.SceneAs<Level>()?.DirectionalShake(GravityHelperInterop.IsPlayerInverted() ? (-Vector2.UnitY) : Vector2.UnitY, 0.1f);
         player.Sprite.Scale = new Vector2(0.5f, 1.5f);
         player.Collider = collider;
+    }
+    
+    
+    private void CustomSuperBounce(float fromY, Player player)
+    {
+        if (player.StateMachine.State == 4 && player.CurrentBooster != null)
+        {
+            player.CurrentBooster.PlayerReleased();
+            player.CurrentBooster = null;
+        }
+        Collider collider = player.Collider;
+        player.Collider = player.normalHitbox;
+        player.MoveV(fromY - player.Bottom);
+        RefillThingy(player);
+        player.StateMachine.State = 0;
+        player.jumpGraceTimer = 0f;
+        player.varJumpTimer = 0.2f;
+        player.AutoJump = true;
+        player.AutoJumpTimer = 0f;
+        player.dashAttackTimer = 0f;
+        player.gliderBoostTimer = 0f;
+        player.wallSlideTimer = 1.2f;
+        player.wallBoostTimer = 0f;
+        player.Speed.X = 0f;
+        player.varJumpSpeed = player.Speed.Y = -185f;
+        player.launched = false;
+        player.level.DirectionalShake(-Vector2.UnitY, 0.1f);
+        Input.Rumble(RumbleStrength.Medium, RumbleLength.Medium);
+        player.Sprite.Scale = new Vector2(0.5f, 1.5f);
+        player.Collider = collider;
+    }
+    
+    private bool CustomSideBounce(int dir, float fromX, float fromY, Player player)
+    {
+        if (Math.Abs(player.Speed.X) > 240f && Math.Sign(player.Speed.X) == dir)
+        {
+            return false;
+        }
+        Collider collider = player.Collider;
+        player.Collider = player.normalHitbox;
+        player.MoveV(Calc.Clamp(fromY - player.Bottom, -4f, 4f));
+        if (dir > 0)
+        {
+            player.MoveH(fromX - player.Left);
+        }
+        else if (dir < 0)
+        {
+            player.MoveH(fromX - player.Right);
+        }
+        RefillThingy(player);
+        player.StateMachine.State = 0;
+        player.jumpGraceTimer = 0f;
+        player.varJumpTimer = 0.2f;
+        player.AutoJump = true;
+        player.AutoJumpTimer = 0f;
+        player.dashAttackTimer = 0f;
+        player.gliderBoostTimer = 0f;
+        player.wallSlideTimer = 1.2f;
+        player.forceMoveX = dir;
+        player.forceMoveXTimer = 0.3f;
+        player.wallBoostTimer = 0f;
+        player.launched = false;
+        player.Speed.X = 240f * dir;
+        player.varJumpSpeed = (player.Speed.Y = -140f);
+        player.level.DirectionalShake(Vector2.UnitX * dir, 0.1f);
+        Input.Rumble(RumbleStrength.Medium, RumbleLength.Medium);
+        player.Sprite.Scale = new Vector2(1.5f, 0.5f);
+        player.Collider = collider;
+        return true;
     }
     
     private bool HoldableHitCeilingSpring(Holdable holdable)
