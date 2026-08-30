@@ -1,0 +1,4 @@
+
+{8a2c80ac-01e3-47b0-bffe-86e2acacd905} event:/DawnHelper/seaGlide/seaGlideMove
+{70856d96-3d6d-48d5-8222-674ef5e98ab7} event:/DawnHelper/seaGlide/glideDashActivate
+{dd81ee42-03f6-47c5-be1b-71c727e29a55} bank:/DawnHelper

@@ -42,3 +42,10 @@ entities.DawnHelper/versatileSpring.placements.description.momentum=An improved 
 entities.DawnHelper/versatileSpring.attributes.description.toggleFlag=Whether the flag should be toggled on hit instead of activating only once.
 entities.DawnHelper/versatileSpring.attributes.description.invertedVerticalMomentum=Inverses the vertical momentum provided by left and right facing springs. Intended for use with Flag On Hit set to "GravityHelper_PlayerInverted" (which makes the spring function like a gravity spring) but works without it.
 entities.DawnHelper/versatileSpring.attributes.description.refillAmount=How many dashes this spring will refill. Mainly relevant for max dash counts higher than 1 but can be used to refill 0 dashes as well. (set to a negative number for default behavior)
+# SeaGlide
+entities.DawnHelper/seaGlide.placements.name.sea_glide=SeaGlide
+entities.DawnHelper/seaGlide.placements.description.sea_glide=A holdable that makes the player move similar to a more agile feather while underwater.
+# State Pickup Controller
+entities.DawnHelper/statePickupController.placements.name.StatePickupController=State Pickup Controller
+entities.DawnHelper/statePickupController.placements.description.StatePickupController=Allows you to pickup and throw holdables in additional states. Includes support for StSwim, StRedDash, StSummitLaunch, and StStarFly (feather state).
+entities.DawnHelper/statePickupController.attributes.description.resetToNormal=Whether the player should go into StPickup and return the StNormal after picking up a holdable in any state.
