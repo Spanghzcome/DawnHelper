@@ -27,5 +27,11 @@
         <Loop id="blapping" path="blapping" frames="0-7" delay="0.01875"/>
     </blapSwock>
 
+    <seaGlide path="objects/DawnHelper/seaGlide/" start="active">
+        <Origin x="8" y="16"/>
+        <Loop id="active" path="idle" delay="0.08"/>
+        <Loop id="inactive" path="inactive" delay="0.08"/>
+    </seaGlide>
+
 </Sprites>
 
