@@ -69,7 +69,6 @@ public class BlapSwock : Entity
         Add(light = new VertexLight(Color.MediumVioletRed, 1f, 16, 48));
         BlapSwock_Glow = new ParticleType()
         {
-         
             Size = 1f,
             Color = Calc.HexToColor("ff0000"),
             Color2 = Calc.HexToColor("ffffff"),

@@ -8,16 +8,16 @@ namespace Celeste.Mod.DawnHelper.Entities;
 [CustomEntity("DawnHelper/superDashBumper")]
 public class SuperDashBumper : Bumper
 {
-    public float timer;
-    public float customSpeed;
-    public bool Static;
-    public bool soup;
-    public bool demo;
-    public bool spead;
-    public bool alwaysBoost;
-    public bool verticalStretch;
-    public bool noRefill;
-    public bool consumeDash;
+    private float timer;
+    private float customSpeed;
+    private bool Static;
+    private bool soup;
+    private bool demo;
+    private bool spead;
+    private bool alwaysBoost;
+    private bool verticalStretch;
+    private bool noRefill;
+    private bool consumeDash;
     private Vector2 fast;
     private Vector2 origspeed;
 
@@ -25,14 +25,14 @@ public class SuperDashBumper : Bumper
     {
         On.Celeste.Player.DashEnd += ResetSoupOnDashEnd;
         Everest.Events.Player.OnDie += ResetSoupOnDeath;
-        Everest.Events.Player.OnRegisterStates += AddPlayerSoupData;
+        Everest.Events.Player.OnSpawn += AddPlayerSoupData;
     }
 
     public static void Unload()
     {
         On.Celeste.Player.DashEnd -= ResetSoupOnDashEnd;
         Everest.Events.Player.OnDie -= ResetSoupOnDeath;
-        Everest.Events.Player.OnRegisterStates -= AddPlayerSoupData;
+        Everest.Events.Player.OnSpawn -= AddPlayerSoupData;
     }
 
     private static void ResetSoupOnDashEnd(On.Celeste.Player.orig_DashEnd orig, Player self)
