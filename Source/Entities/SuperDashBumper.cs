@@ -1,5 +1,6 @@
 using System;
 using Celeste.Mod.Entities;
+using Celeste.Pico8;
 using Microsoft.Xna.Framework;
 using Monocle;
 
@@ -8,22 +9,31 @@ namespace Celeste.Mod.DawnHelper.Entities;
 [CustomEntity("DawnHelper/superDashBumper")]
 public class SuperDashBumper : Bumper
 {
+    public enum DashType
+    {
+        Dash,
+        SuperDash,
+        RedDash
+    }
     private float timer;
     private float customSpeed;
     private bool Static;
-    private bool soup;
     private bool demo;
     private bool spead;
     private bool alwaysBoost;
     private bool verticalStretch;
     private bool noRefill;
     private bool consumeDash;
+    private bool eightWayDash;
+    private DashType dashType;
     private Vector2 fast;
     private Vector2 origspeed;
+    private ParticleType particleType;
 
     public static void Load()
     {
         On.Celeste.Player.DashEnd += ResetSoupOnDashEnd;
+        On.Celeste.Player.RedDashEnd += THING; 
         Everest.Events.Player.OnDie += ResetSoupOnDeath;
         Everest.Events.Player.OnSpawn += AddPlayerSoupData;
     }
@@ -31,6 +41,7 @@ public class SuperDashBumper : Bumper
     public static void Unload()
     {
         On.Celeste.Player.DashEnd -= ResetSoupOnDashEnd;
+        On.Celeste.Player.RedDashEnd -= THING;
         Everest.Events.Player.OnDie -= ResetSoupOnDeath;
         Everest.Events.Player.OnSpawn -= AddPlayerSoupData;
     }
@@ -66,17 +77,27 @@ public class SuperDashBumper : Bumper
         }
     }
 
+    private static void THING(On.Celeste.Player.orig_RedDashEnd orig, Player self)
+    {
+        if (self.Get<SoupData>() is { isRedDashByBumper: true } soup)
+        {
+            soup.isRedDashByBumper = false;
+        }
+        orig(self);
+    }
+
     public SuperDashBumper(EntityData data, Vector2 offset) : base(data, offset)
     {
         consumeDash = data.Bool("consumeDash");
+        dashType = data.Enum<DashType>("dashType");
         noRefill = data.Bool("noRefill");
         verticalStretch = data.Bool("verticalDashStretching");
         Static = data.Bool("static");
         spead = data.Bool("fast");
         alwaysBoost = data.Bool("alwaysBoost");
-        soup = data.Bool("soup");
         timer = data.Float("respawnTimer");
         customSpeed = data.Float("launchDashSpeed");
+        eightWayDash = data.Bool("eightWayDash");
 
         if (Static)
             Remove(sine);
@@ -85,15 +106,46 @@ public class SuperDashBumper : Bumper
         // don't react to core changes; never appear to be a hazard
         Remove(Get<CoreModeListener>());
 
+        string spriteName;
         // CreateOn modifies the sprite parameter in-place
-        GFX.SpriteBank.CreateOn(sprite, soup ? "superDashBumper" : "dashBumper");
+        switch (dashType)
+        {
+            case DashType.RedDash:
+                spriteName = "redDashBumper";
+                break;
+            case DashType.SuperDash:
+                spriteName = "superDashBumper";
+                break;
+            default:
+                spriteName = "dashBumper";
+                break;
+        }
+        GFX.SpriteBank.CreateOn(sprite, spriteName);
         sprite.Play("idle");
         sprite.CenterOrigin();
+        particleType = new ParticleType
+        {
+            Source = GFX.Game["particles/blob"],
+            Color = Calc.HexToColor("942c3e"),
+            FadeMode = ParticleType.FadeModes.None,
+            LifeMin = 0.5f,
+            LifeMax = 0.8f,
+            Size = 0.7f,
+            SizeRange = 0.25f,
+            ScaleOut = true,
+            Direction = 4.712389f,
+            DirectionRange = 0.17453292f,
+            SpeedMin = 10f,
+            SpeedMax = 20f,
+            SpeedMultiplier = 0.01f,
+            Acceleration = new Vector2(0f, 90f)
+        };
     }
 
     internal class SoupData : Component
     {
         public bool isTemporarySuperdash;
+        public bool isRedDashByBumper;
         public SoupData() : base(false, false) { }
     }
 
@@ -161,11 +213,16 @@ public class SuperDashBumper : Bumper
             vector.Y = 0f;
             vector.X = Math.Sign(vector.X);
         }
+        
         if (sidesOnly && vector.X != 0f)
         {
             vector.Y = 0f;
             vector.X = Math.Sign(vector.X);
         }
+        
+        if (eightWayDash) 
+            vector = vector.EightWayNormal();
+        
         player.Speed = customSpeed * vector;
         // Determines whether fast mode is activated
         if (spead)
@@ -174,40 +231,49 @@ public class SuperDashBumper : Bumper
             player.Speed.X = fast.X;
             //In case you wanna mess with vertical dash stretching like a chad
         }
-
-        if (player.Speed.Y <= 50f)
-        {
-            player.Speed.Y = Math.Min(-150f, player.Speed.Y);
-            player.AutoJump = true;
-        }
+        
         if (player.Speed.X != 0f)
         {
             if (Input.MoveX.Value == Math.Sign(player.Speed.X) && !alwaysBoost)
             {
-                player.explodeLaunchBoostTimer = 0f;
+                player.explodeLaunchBoostTimer = 0;
+                player.Speed.X *= 1.2f;
+            }
+            else if (alwaysBoost)
+            {
                 player.Speed.X *= 1.2f;
             }
             else
             {
                 player.explodeLaunchBoostTimer = 0.01f;
-                player.Speed.X *= 1.2f;
+                player.explodeLaunchBoostSpeed = player.Speed.X * 1.2f;
             }
         }
         SlashFx.Burst(player.Center, player.Speed.Angle());
         player.RefillStamina();
-
         player.OverrideDashDirection = vector;
-        player.StateMachine.ForceState(2);
-        if (spead && verticalStretch)
-            Alarm.Set(player, 0.03f, () => player.Speed.Y = fast.Y);
-
-        // soup
-        // if the variant isn't already enabled map-wide, mark this superdash as temporary
-        // the variant will be turned back off in DashEnd
-        if (soup && !SaveData.Instance.Assists.SuperDashing)
+        if (dashType == DashType.RedDash)
         {
-            SaveData.Instance.Assists.SuperDashing = true;
-            player.Get<SoupData>().isTemporarySuperdash = true;
+            Vector2 origSpeed2 = player.Speed;
+            player.StateMachine.ForceState(5);
+            Alarm.Set(player, 0.03f, () => player.Speed = origSpeed2);
+            player.Get<SoupData>().isRedDashByBumper = true;
+        }
+        else
+        {
+            player.StateMachine.ForceState(2);
+
+            if (spead && verticalStretch)
+                Alarm.Set(player, 0.03f, () => player.Speed.Y = fast.Y);
+
+            // soup
+            // if the variant isn't already enabled map-wide, mark this superdash as temporary
+            // the variant will be turned back off in DashEnd
+            if (dashType == DashType.SuperDash && !SaveData.Instance.Assists.SuperDashing)
+            {
+                SaveData.Instance.Assists.SuperDashing = true;
+                player.Get<SoupData>().isTemporarySuperdash = true;
+            }
         }
 
         //Prevents the dash direction override being permanent
@@ -217,11 +283,21 @@ public class SuperDashBumper : Bumper
 
         return vector;
     }
-    
+
     public override void Update()
     {
         base.Update();
         if (Static)
             Position = anchor;
-    }
+
+        if (Scene?.Tracker.GetEntity<Player>() is not { } player) return;
+
+        if (player.Get<SoupData>().isRedDashByBumper)
+        {
+            if (Scene.OnInterval(0.02f))
+            {
+                (Scene as Level).ParticlesBG.Emit(particleType, 2, player.Center - player.DashDir * 3f + new Vector2(0f, -2f), new Vector2(3f, 3f), player.Speed.Angle());
+            }
+        }
+}
 }
