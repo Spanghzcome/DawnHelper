@@ -2,6 +2,12 @@ local drawableSprite = require("structs.drawable_sprite")
 local utils = require("utils")
 local SuperDashBumper = {}
 
+local dashType = {
+    ["Dash"] = 0,
+    ["SuperDash"] = 1,
+    ["RedDash"] = 2
+}
+
 SuperDashBumper.name = "DawnHelper/superDashBumper"
 SuperDashBumper.nodeLineRenderType = "line"
 SuperDashBumper.depth = 0
@@ -10,63 +16,68 @@ SuperDashBumper.placements = {
         name = "DashBumper",
         data = {
             verticalDashStretching = false,
+            dashType = 0,
             static = true,
-            soup = false,
             alwaysBoost = false,
             fast = false,
             respawnTimer = 0.6,
             consumeDash = false,
             noRefill = false,
-            launchDashSpeed = 280
-        }
-    },
-    {
-        name = "DashBumper(Fast)",
-        data = {
-            verticalDashStretching = true,
-            static = true,
-            soup = false,
-            alwaysBoost = false,
-            fast = true,
-            respawnTimer = 0.6,
-            consumeDash = false,
-            noRefill = false,
-            launchDashSpeed = 280
+            launchDashSpeed = 280,
+            eightWayDash = false
         }
     },
     {
         name = "SuperDashBumper",
         data = {
             verticalDashStretching = false,
-
+            dashType = 1,
             static = true,
-            soup = true,
             alwaysBoost = false,
             fast = false,
             respawnTimer = 0.6,
             consumeDash = false,
             noRefill = false,
-            launchDashSpeed = 280
+            launchDashSpeed = 280,
+            eightWayDash = false
         }
     },
     {
-        name = "SuperDashBumper(Fast)",
+        name = "RedDashBumper",
         data = {
             verticalDashStretching = true,
+            dashType = 2,
             static = true,
-            soup = true,
             alwaysBoost = false,
-            fast = true,
+            fast = false,
             respawnTimer = 0.6,
             consumeDash = false,
             noRefill = false,
-            launchDashSpeed = 280
+            launchDashSpeed = 280,
+            eightWayDash = false
         }
     }
 }
 
+SuperDashBumper.fieldInformation = {
+    dashType = {
+        editable = false,
+        options = dashType
+    }
+}
+
 function SuperDashBumper.texture(room, entity)
-    return entity.soup and "objects/DawnHelper/superDashBumper/Idle18" or "objects/DawnHelper/dashBumper/Idle18"
+    local spriteType
+
+    if entity.dashType == 2 then
+        spriteType = "objects/DawnHelper/redDashBumper/Idle18"
+    elseif entity.dashType == 1 then
+        spriteType = "objects/DawnHelper/superDashBumper/Idle18"
+    else
+        spriteType = "objects/DawnHelper/dashBumper/Idle18"
+    end
+
+    return spriteType
 end
 
 function SuperDashBumper.selection(room, entity)
