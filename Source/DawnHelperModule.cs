@@ -1,5 +1,8 @@
 ﻿using System;
 using Celeste.Mod.DawnHelper.Entities;
+using Celeste.Mod.DawnHelper.Misc;
+using Celeste.Mod.DawnHelper.Settings;
+using MonoMod.ModInterop;
 
 namespace Celeste.Mod.DawnHelper;
 
@@ -28,10 +31,21 @@ public class DawnHelperModule : EverestModule {
 
     public override void Load() {
         SuperDashBumper.Load();
+        AlwaysBoosting.Load();
+        BlapSwock.Load();
+        CoyoteBlock.Load();
+        SeaGlide.Load();
+        StatePickupController.Load();
+        typeof(GravityHelperInterop.GelperImports).ModInterop();
     }
 
     public override void Unload() {
         SuperDashBumper.Unload();
+        AlwaysBoosting.Unload();
+        BlapSwock.Unload();
+        CoyoteBlock.Unload();
+        SeaGlide.Unload();
+        StatePickupController.Unload();
     }
 
     public override void LoadContent(bool firstLoad)

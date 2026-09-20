@@ -13,15 +13,13 @@ namespace Celeste.Mod.DawnHelper.Entities;
 
 public class VersatileSpring : Spring
 {
-    private string spritePath;
     private Orientations onOrientation;
     private readonly bool _cursed;
     private readonly bool _holdablesCanUse;
     private readonly bool _flagToggle;
     private readonly bool _drawOutline;
-    private readonly bool refillStamina;
     private bool flagTrue;
-    private bool _invertedVerticalMomentum;
+    private readonly bool _invertedVerticalMomentum;
     private readonly bool _refillStamina;
     private readonly int _refillAmount;
     private readonly string _flagOnHit;

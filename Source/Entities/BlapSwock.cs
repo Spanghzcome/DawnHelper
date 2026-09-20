@@ -29,13 +29,13 @@ public class BlapSwock : Entity
     private Vector2 origSpeed;
     private Vector2 fast;
     private Vector2 target;
-    private EventInstance loop;
     private LedgeBlocker thing;
     private static ILHook dashCoroutineHook;
     private bool dashDirectionSpeedRetention;
     private bool fun;
     private bool spead;
     private bool dashedInside2;
+    private SoundSource blapping;
     
     public static void Load()
     {
@@ -86,6 +86,7 @@ public class BlapSwock : Entity
             Color = Calc.HexToColor(data.Attr("particleColor1", "fbf236")),
             Color2 = Calc.HexToColor(data.Attr("particleColor2", "6abe30"))
         };
+        Add(blapping = new SoundSource());
     }
 
     private static void AddDashInsideCheck(Player player)
@@ -117,7 +118,7 @@ public class BlapSwock : Entity
             if (player.StateMachine.State == Player.StDash)
             {
                 Audio.Play("event:/game/05_mirror_temple/swapblock_move", player.Center);
-                loop = Audio.Loop("event:/game/06_reflection/badeline_pull_rumble_loop", player.Center);
+                blapping.Play("event:/game/06_reflection/badeline_pull_rumble_loop");
                 
                 vector = (player.Center - target);
                 vector = vector.SafeNormalize();
@@ -299,7 +300,7 @@ public class BlapSwock : Entity
             sprite.Play("stop");
             Audio.Play("event:/game/00_prologue/car_down", Position);
             Audio.Play("event:/game/05_mirror_temple/swapblock_move_end", player.Center);
-            Audio.Stop(loop);
+            blapping.Stop();
             Remove(thing);
             player.Get<DashInsideCheck>().dashedInside = false;
             dashedInside2 = false;

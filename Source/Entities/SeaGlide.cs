@@ -15,7 +15,6 @@ public class SeaGlide : TheoCrystal
     private float dashCooldownTimer;
     private DisplacementRenderer.Burst burst;
     private ParticleType particleType;
-    private EventInstance moveLoop;
     private SoundSource loopingSFX;
     private bool glideDashedSound;
     private bool holdToActivate;

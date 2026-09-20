@@ -11,7 +11,6 @@ public class AlwaysBoostingController : Entity
 {
     private string flag;
     private bool flagTrue;
-    private bool toggled;
     private bool safeRespawn;
     private bool running;
     private bool renderParticles;

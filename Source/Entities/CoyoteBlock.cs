@@ -34,7 +34,6 @@ public class CoyoteBlock : Solid
     private bool staminaRefill;
     private bool blendIn;
     private bool speadlmao;
-    private bool broken;
     private bool coyoteOnlyWhenDashing;
     private float coyoteTime;    
     private float coyoteTime2;
