@@ -25,6 +25,7 @@ public class SuperDashBumper : Bumper
     private bool noRefill;
     private bool consumeDash;
     private bool eightWayDash;
+    private bool horizontalSnap;
     private DashType dashType;
     private Vector2 fast;
     private Vector2 origspeed;
@@ -98,9 +99,13 @@ public class SuperDashBumper : Bumper
         timer = data.Float("respawnTimer");
         customSpeed = data.Float("launchDashSpeed");
         eightWayDash = data.Bool("eightWayDash");
+        horizontalSnap = data.Bool("horizontalSnap");
 
         if (Static)
+        {
             Remove(sine);
+            Position = anchor;
+        }
         Get<PlayerCollider>().OnCollide = OnPlayer;
 
         // don't react to core changes; never appear to be a hazard
@@ -184,7 +189,7 @@ public class SuperDashBumper : Bumper
         level.Displacement.AddBurst(Center, 0.3f, 8f, 32f, 0.8f);
         level.Particles.Emit(P_Launch, 12, Center + vector2 * 12f, Vector2.One * 3f, vector2.Angle());
 
-        if (!player.Inventory.NoRefills || !noRefill || !consumeDash)
+        if (!player.Inventory.NoRefills && !noRefill && !consumeDash)
             player.RefillDash();
         if (consumeDash)
         {
@@ -208,7 +213,7 @@ public class SuperDashBumper : Bumper
             vector.X = 0f;
             vector.Y = -1f;
         }
-        else if (num <= 0.65f && num >= -0.55f)
+        else if (horizontalSnap && num <= 0.65f && num >= -0.55f)
         {
             vector.Y = 0f;
             vector.X = Math.Sign(vector.X);
@@ -256,24 +261,37 @@ public class SuperDashBumper : Bumper
         {
             Vector2 origSpeed2 = player.Speed;
             player.StateMachine.ForceState(5);
-            Alarm.Set(player, 0.03f, () => player.Speed = origSpeed2);
+            Alarm.Set(player, 0.03f, () =>
+            {
+                player.Speed = origSpeed2;
+                if (Math.Sign(player.Speed.X) != 0)
+                {
+                    player.Facing = (Facings)Math.Sign(player.Speed.X);
+                }
+            });
             player.Get<SoupData>().isRedDashByBumper = true;
         }
         else
         {
-            player.StateMachine.ForceState(2);
-
-            if (spead && verticalStretch)
-                Alarm.Set(player, 0.03f, () => player.Speed.Y = fast.Y);
-
             // soup
             // if the variant isn't already enabled map-wide, mark this superdash as temporary
             // the variant will be turned back off in DashEnd
-            if (dashType == DashType.SuperDash && !SaveData.Instance.Assists.SuperDashing)
+            bool temporarySuperdash = dashType == DashType.SuperDash && !SaveData.Instance.Assists.SuperDashing;
+            if (temporarySuperdash)
             {
                 SaveData.Instance.Assists.SuperDashing = true;
+            }
+            
+            player.StateMachine.ForceState(2);
+
+            //superDashing set to true before forcestate to allow dash attack bonus in DashBegin
+            //temporary superdash set after, otherwise dashing into the bumper will call DashEnd and instantly reset superdash
+            if (temporarySuperdash)
+            {
                 player.Get<SoupData>().isTemporarySuperdash = true;
             }
+            if (spead && verticalStretch)
+                Alarm.Set(player, 0.03f, () => player.Speed.Y = fast.Y);
         }
 
         //Prevents the dash direction override being permanent

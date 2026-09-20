@@ -24,7 +24,8 @@ SuperDashBumper.placements = {
             consumeDash = false,
             noRefill = false,
             launchDashSpeed = 280,
-            eightWayDash = false
+            eightWayDash = false,
+            horizontalSnap = true
         }
     },
     {
@@ -39,7 +40,8 @@ SuperDashBumper.placements = {
             consumeDash = false,
             noRefill = false,
             launchDashSpeed = 280,
-            eightWayDash = false
+            eightWayDash = false,
+            horizontalSnap = true
         }
     },
     {
@@ -54,7 +56,8 @@ SuperDashBumper.placements = {
             consumeDash = false,
             noRefill = false,
             launchDashSpeed = 280,
-            eightWayDash = false
+            eightWayDash = false,
+            horizontalSnap = true
         }
     }
 }
@@ -81,9 +84,18 @@ function SuperDashBumper.texture(room, entity)
 end
 
 function SuperDashBumper.selection(room, entity)
-    return utils.rectangle(entity.x - 12, entity.y -12, 24, 24)
+    local main = utils.rectangle(entity.x - 12, entity.y - 12, 24, 24)
+    local nodes = {}
+
+    if entity.nodes then
+        for i, node in ipairs(entity.nodes) do
+            nodes[i] = utils.rectangle(node.x - 12, node.y - 12, 24, 24)
+        end
+    end
+
+    return main, nodes
 end
 
-SuperDashBumper.nodeLimits = {0, -1}
+SuperDashBumper.nodeLimits = {0, 1}
 
 return SuperDashBumper
