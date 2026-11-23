@@ -17,7 +17,8 @@ public class CoyoteBlock : Solid
     {
         Rebound = 0,
         Bounce = 1,
-        Ignore = 2
+        Ignore = 2,
+        Reflect = 3
     }
 
     public enum OnHitType
@@ -167,8 +168,21 @@ public class CoyoteBlock : Solid
             case ReboundType.Ignore:
                 player.dashAttackTimer = 0;
                 return DashCollisionResults.Ignore;
+            case ReboundType.Reflect:
+                ReboundReflect(player);
+                player.dashAttackTimer = 0;
+                player.StateMachine.State = Player.StNormal; 
+                return DashCollisionResults.Ignore;
         }
         return DashCollisionResults.Rebound;
+    }
+
+    private void ReboundReflect(Player player)
+    {
+        if (Math.Abs(player.Speed.Y) > Math.Abs(player.Speed.X))
+            player.Speed.Y = -player.Speed.Y;
+        else
+            player.Speed.X = -player.Speed.X;
     }
 
     private void Break(Vector2 from, Vector2 direction)
